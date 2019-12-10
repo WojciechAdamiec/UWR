@@ -1,0 +1,27 @@
+#lang racket
+
+;; Pomocnicza funkcja
+(define (good-enough? x y)
+  (< (abs (- x y)) 0.00001))
+
+;; Procedura, która zwraca przyblizenie wartosci ułamka łańcuchowego
+
+(define (chain Numerator Denominator)
+  (define (chain-iter Numerator Denominator previous_val current_val k)
+    (if (good-enough? current_val previous_val)
+        current_val
+        (chain-iter Numerator Denominator current_val (fun k) (+ k 1))))
+
+  (define (Astream argument)
+  (cond [(= argument -1) 1]
+        [(= argument 0) 0]
+        [else (+ (* (Denominator argument) (Astream (- argument 1)) ) (* (Numerator argument) (Astream (- argument 2)) ) )]))
+
+  (define (Bstream argument)
+  (cond [(= argument -1) 0]
+        [(= argument 0) 1]
+        [else (+ (* (Denominator argument) (Bstream (- argument 1)) ) (* (Numerator argument) (Bstream (- argument 2)) ) )]))
+
+
+  )
+    

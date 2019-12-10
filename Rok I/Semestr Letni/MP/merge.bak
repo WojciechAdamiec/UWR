@@ -1,0 +1,7 @@
+#lang racket
+
+
+(define (merge L1 L2)
+  (define (merge-iter L1 L2 result)
+  (if (> (car L1) (car L2))
+      
