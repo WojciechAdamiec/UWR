@@ -1,0 +1,137 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{{./images/}}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{indentfirst}
+\usepackage[margin=0.8in]{geometry}
+
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand{\re}[1]{\textcolor{red}{#1}}
+
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+
+\newcommand{\gr}[1]{\textcolor{Plum}{#1}}
+
+
+\begin{document}
+\author{Wojciech Adamiec, 310064}
+\title{
+	\textbf{Pracownia 2}\\
+	\large Analiza Numeryczna (M)\\
+	\large Prowadzący: Witold Karczewski\\
+	\large Zadanie P2.9	
+}
+
+\maketitle
+
+\tableofcontents
+\section{Wstęp}
+
+
+\subsection{Treść Zadania}
+Wykorzystaj aproksymację średniokwadratową, aby dopasować funkcję postaci $y=ab^x$ do danych:\\
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|} \hline
+	$x$ & 1     & 2     & 3     & ... & m   \\ \hline
+	$y$ & $y_1$ & $y_2$ & $y_3$ & ... & $y_m$   \\ \hline
+	\end{tabular}
+\end{center}
+Opracowaną metodę przetestuj na wybranych przykładach.
+
+
+\subsection{Plan Działania}
+Zgodnie z poleceniem, do rozwiązania naszego problemu zastosujemy aproksymację średniokwadratową. Nie możemy jednak zastosować jej wprost, bowiem funkcja postaci $y=ab^x$ nie jest wielomianem. Aby rozwiązać ten problem, dokonamy kilku przekształceń:\\
+\[ y=ab^x\]
+Logarytmujemy obustronnie równianie:
+\[ ln(y)=ln(ab^x)\]
+Korzystamy z własności logarytmów:
+\[ ln(y)=ln(a)+ln(b^x)\]
+\[ ln(y)=ln(a)+x\cdot ln(b)\]
+Zauważamy, że mamy już teraz postać wielomianu - w naszym przypadku funkcji liniowej. Użyjmy teraz zmiennych pomocniczych: $Y=ln(y)$, $A=ln(a)$ i $B=ln(b)$. Dostajemy wówczas:
+\[Y=A+x\cdot B\]
+Teraz możemy już bez problemu zastosować aproksymację średniokwadratową. Szukamy minimum wyrażenia:
+\[||Y - (A + x\cdot B))||^2\]
+W tym celu musimy rozwiązać równanie:
+\[
+\begin{bmatrix}
+\langle 1, 1 \rangle & \langle 1, x \rangle\\
+\langle x, 1 \rangle & \langle x, x \rangle
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+A\\
+B
+\end{bmatrix}
+=
+\begin{bmatrix}
+\langle Y, 1 \rangle\\
+\langle Y, x \rangle
+\end{bmatrix}
+\]
+W naszym przypadku przyjmujemy dyskretną definicję iloczynu skalarnego, co upraszcza nam równanie do:
+\[
+\begin{bmatrix}
+m & \sum_{k=1}^{m} x_k \\
+\sum_{k=1}^{m} x_k & \sum_{k=1}^{m} x_k^2
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+A\\
+B
+\end{bmatrix}
+=
+\begin{bmatrix}
+\sum_{k=1}^{m} Y_k \\
+\sum_{k=1}^{m} Y_k x_k
+\end{bmatrix}
+\]
+Teraz pozostaje nam rozwiązać układ 2 równań liniowych, aby otrzymać $A$ i $B$. Końcowym krokiem będzie wyliczenie $a$ i $b$ zgodnie ze wzorami:
+\[ a=e^A\]
+\[ b=e^B\]
+Zatem nasz plan działania sprowadza się do:
+\begin{itemize}
+\item Obliczenia $Y_k=ln(y_k)$ dla $k=1, 2, 3, ..., m$
+\item Obliczenia $\sum_{k=1}^{m} x_k$ oraz $\sum_{k=1}^{m} x_k^2$
+\item Obliczenia $\sum_{k=1}^{m} Y_k$ oraz $\sum_{k=1}^{m} Y_k x_k$
+\item Rozwiązania układu 2 równań liniowych
+\item Obliczeniu $a$ i $b$
+\end{itemize}
+Do zadania dołączony jest program, który wykonuje wszystkie te czynności i od razu zwraca wartości $a$ i $b$.
+
+\subsection{Sprawy Techniczne}
+Wszystkie obliczenia numeryczne zostały wykonane w języku \textit{Julia} w wersji \textit{v1.2.0}, w podwójnej precyzji - \textit{binary64} zgodnie ze standardem \textit{IEEE 754}, którego opis można znaleźć np. tu: \url{https://en.wikipedia.org/wiki/IEEE_754}
+
+\section{Rozwiązanie Zadania}
+W treści zadania nie mamy żadnych konkretnych danych, zatem naszą metodę zastosujemy do kilku własnoręcznie wymyślonych przykładów. Będziemy je tworzyć w taki sposób, że najpierw wybierzemy pewną funkcję postaci $y=ab^x$, następnie dla $m$ różnych wartości $x$ odczytamy i zapiszemy odpowiadające wartości $y$. Na koniec dokonamy lekkiego \textit{zaburzenia} wartości $x$ i $y$, tak aby zasymulować rzeczywistą sytuację.
+
+\subsection{Przykład 1}
+Dla sprawdzenia poprawności przedstawionej metody zacznijmy od prostej funkcji $y=2^x$. W tym przykładzie wyjątkowo nie dokonamy zaburzenia wartości, aby upewnić się, że nasza metoda jest poprawna. Jako dane weźmiemy:
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|} \hline
+	$x$ & 1 & 2 & 3 & 4 & 5   \\ \hline
+	$y$ & 2 & 4 & 8 & 16& 32  \\ \hline
+	\end{tabular}
+\end{center}
+Czyli $m=5$.
+\subsection{Przykład 2}
+
+\subsection{Przykład 3}
+
+\subsection{Przykład 4}
+
+\section{Podsumowanie}
+
+\end{document}
+
