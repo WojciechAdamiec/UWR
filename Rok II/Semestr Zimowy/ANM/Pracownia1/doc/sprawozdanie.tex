@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\graphicspath{{./images/}}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{indentfirst}
+\usepackage[margin=0.8in]{geometry}
+
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand{\re}[1]{\textcolor{red}{#1}}
+
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+
+\newcommand{\gr}[1]{\textcolor{Plum}{#1}}
+
+
+\begin{document}
+\author{Wojciech Adamiec, 310064}
+\title{
+	\textbf{Pracownia 1}\\
+	\large Analiza Numeryczna (M)\\
+	\large Prowadzący: Witold Karczewski\\
+	\large Zadanie P1.3	
+}
+
+\maketitle
+
+\tableofcontents
+\section{Wstęp}
+
+
+\subsection{Treść Zadania}
+Obliczać z pojedynczą, a następnie podwójną precyzją, kolejne wyrazy ciągów:\\
+\begin{equation}
+S_n = \sum_{k=0}^n (-1)^k k!^{-2}
+\end{equation}
+\begin{equation}
+T_n = \sum_{k=0}^n  k!^{-2}
+\end{equation}
+Do chwili, gdy dwa kolejne wyrazy będą sobie równe w odpowiedniej arytmetyce maszynowej - to jest ustalenie dla jakiej najmniejszej wartości n: $S_n = S_{n+1}$ (analogicznie $T_n = T_{n+1}$).
+
+\subsection{Plan Działania}
+Będziemy chcieli wykonać zadanie dla obu ciągów i obu precyzji w kilku wariantach. Rozpatrzymy dwie kolejności dodawania do siebie kolejnych składników sumy - w jednej wersji będziemy dodawać składniki malejąco (zgodnie z naturalną interpretacją wzoru), a w drugiej rosnąco (ostatnim składnikiem będzie $1$ : dla $k=0$). Dodatkowo rozpatrzymy dwie kolejności wykonywania operacji na składnikach - w jednej wersji będziemy najpierw wykonywać podnoszenie do kwadratu, a potem odwracanie, a w drugiej wersji będziemy najpierw odwracali liczbę, a potem podnosili ją do kwadratu.
+
+\subsection{Sprawy Techniczne}
+Wszystkie obliczenia numeryczne zostały wykonane w języku \textit{Julia} w wersji \textit{v1.2.0}. Za pojedynczą precyzję przyjmujemy \textit{binary32}, a za podwójną \textit{binary64} zgodnie ze standardem \textit{IEEE 754}, którego opis można znaleźć np. tu: \url{https://en.wikipedia.org/wiki/IEEE_754}.
+
+\section{Rozwiązanie Zadania}
+
+\subsection{Znalezienie szukanych wartości n}
+Szukamy najmniejszych $n$, takich że: $S_n = S_{n+1}$ (analogicznie $T_n = T_{n+1}$). Zauważmy, że rozróżniamy:
+\begin{itemize}
+	\item Ciągi $S_n$ i $T_n$
+  	\item Pojedynczą i podwójną precyzję
+  	\item Kolejność sumowania wyrazów (rosnąco lub malejąco)
+  	\item Kolejność wykonywania operacji \textit{Podniesienie do kwadratu} i \textit{Odwrócenie liczby}
+\end{itemize}
+Daje nam to w sumie 16 różnych problemów, a co za tym idzie, 16 różnych wartości $n$ do znalezienia. W poniższej tabeli znajdują się szukane wartości $n$ dla tych 16 wariantów. (Wartości $n$ obliczone zostały za pomocą programu dołączonego do rozwiązania)
+
+\begin{center}
+	\begin{tabular}{||c|c|c|c||c||} \hline
+	Ciąg & Precyzja & Kol. wyrazów & Kol. operacji & $n$ \\ \hline
+	$T_n$ 	& 32     & malejąco     & kwadrat     &  7   \\
+	$T_n$ 	& 32     & malejąco     & odwrócenie  &  7   \\
+	$T_n$ 	& 32     & rosnąco      & kwadrat     &  6   \\
+	$T_n$ 	& 32     & rosnąco      & odwrócenie  &  6   \\ \hline
+	$T_n$ 	& 64     & malejąco     & kwadrat     &  12  \\
+	$T_n$ 	& 64     & malejąco     & odwrócenie  &  12  \\ 
+	$T_n$ 	& 64     & rosnąco      & kwadrat     &  11  \\
+	$T_n$ 	& 64     & rosnąco      & odwrócenie  &  11  \\ \hline
+	$S_n$ 	& 32     & malejąco     & kwadrat     &  8   \\
+	$S_n$ 	& 32     & malejąco     & odwrócenie  &  8   \\
+	$S_n$ 	& 32     & rosnąco      & kwadrat     &  6   \\
+	$S_n$ 	& 32     & rosnąco      & odwrócenie  &  6   \\ \hline
+	$S_n$ 	& 64     & malejąco     & kwadrat     &  12  \\
+	$S_n$ 	& 64     & malejąco     & odwrócenie  &  12  \\
+	$S_n$ 	& 64     & rosnąco      & kwadrat     &  11  \\
+	$S_n$ 	& 64     & rosnąco      & odwrócenie  &  11  \\ \hline
+	\end{tabular}
+\end{center}
+Analizując tabelę wyników można od razu odnotować kilka obserwacji:
+\begin{itemize}
+	\item Kolejność wykonywania operacji (\textit{Podniesienie do kwadratu} i \textit{Odwrócenie liczby}) nie ma wpływu na wartość szukanego $n$. Co więcej, z dokładnych wartości kolejnych wyrazów ciągów $S_n$ i $T_n$ możemy łatwo wywnioskować, że na potrzeby naszego zadania możemy całkowicie zaniedbać kolejność wykonywania tych operacji, gdyż otrzymywane wartości są identyczne.
+  	\item Dla podwójnej precyzji wartości $n$ są zauważalnie wyższe niż dla precyzji pojedynczej. Oczywistym powodem tego zjawiska jest większa ilość bitów poświęconych na mantysę liczb maszynowych co od razu przekłada się na zwiększenie dokładności.
+  	\item Dla ciągu $S_n$ jesteśmy w stanie minimalnie dokładniej wyznaczać kolejne wyrazy niż dla ciągu $T_n$. Różnica ta jest widoczna przy pojedynczej precyzji i sumowaniu w kolejności malejącej, jednak jest tak niewielka, że zanika przy większej precyzji (i lepszym sposobie sumowania).
+  	\item Bardziej dokładnym sposobem sumowania okazuje się sumowanie liczb w kolejności malejącej. Na pierwszą myśl wydaje się to sprzeczne z intuicjami, gdyż większe błędy dodawania przypadają wówczas na większe liczby. Okazuje się jednak, że owe błędy nie mają kluczowego znaczenia dla dokładności metody. 
+\end{itemize}
+
+\subsection{Dodatkowe spostrzeżenia}
+Ze względu na sposób rozwiązania zadania liczyliśmy $T_n$ i $S_n$ dla $n$ większych niż, te których szukamy. W kilku miejscach zdarzyła się sytuacja taka, że $T_n = T_{n + 1}$, ale jednocześnie $T_n \neq T_{n + 2}$ lub $T_n \neq T_{n + 3}$. Taka anomalia jest wynikiem szukania odwrotności liczb maszynowych w zbiorze liczb maszynowych.
+
+\section{Podsumowanie}
+???
+\end{document}
+
