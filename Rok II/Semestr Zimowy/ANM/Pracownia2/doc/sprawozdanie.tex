@@ -124,14 +124,60 @@ Dla sprawdzenia poprawności przedstawionej metody zacznijmy od prostej funkcji 
 	$y$ & 2 & 4 & 8 & 16& 32  \\ \hline
 	\end{tabular}
 \end{center}
-Czyli $m=5$.
+Czyli $m=5$.\\
+Stosując nasz algorytm otrzymujemy:\\
+$a = 1$ oraz $b = 2.0000000000000004$, zatem otrzymaliśmy w niemal idealnym przybliżeniu funkcję wejściową. Pozwala to nabrać intuicji, że nasz algorytm faktycznie działa.
 \subsection{Przykład 2}
+Weźmy teraz funkcję $y = 2 \cdot 3^x$. Zaburzymy nieznacznie wartości - nasze dane będą takie:\\ 
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|} \hline
+	$x$ & 1 & 2 & 3 & 4 & 5   \\ \hline
+	$y$ & 5.87 & 18.05 & 54.1 & 162.6 & 487.1  \\ \hline
+	\end{tabular}
+\end{center}
+Stosując nasz algorytm otrzymujemy:\\
+$a \approx 1.9662069$ i $b \approx 3.014812$, w poszczególnych punktach daje nam to:\\
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|} \hline
+	$y$  & 5.87 & 18.05 & 54.1 & 162.6 & 487.1   \\ \hline
+	$y'$ & 5.93 & 17.87 & 53.88 & 162.43 & 489.70  \\ \hline
+	$|\Delta|$ & 0.06 & 0.18 & 0.22 & 0.17 & 2.6  \\ \hline
+	\end{tabular}
+\end{center}
+
 
 \subsection{Przykład 3}
-
-\subsection{Przykład 4}
-
+Sprawdźmy teraz jakość algorytmu w zależności od ilości badanych punktów. W tym celu weźmy teraz funkcję $y = 7.4284 \cdot 1.5672^x$ dla $m=3$ i $m=5$.\\ 
+Zacznijmy od $m=3$:\\
+\begin{center}
+	\begin{tabular}{|c|c|c|c|} \hline
+	$x$ & 12.5677 & 23.2512  & 44.1234 \\ \hline
+	$y$ & 2104.556 & 255724.457 & 3023070299.5619  \\ \hline
+	\end{tabular}
+\end{center}
+Otrzymujemy:\\
+$a \approx 7.428399896$ i $b \approx 1.5672$
+Zauważamy, że już dla $m=3$ wynik jest niemal perfekcyjny, wynika to z tego, że nie zaburzyliśmy naszych danych. Zróbmy zatem lekkie zaburzenie:\\
+\begin{center}
+	\begin{tabular}{|c|c|c|c|} \hline
+	$x$ & 12.56 & 23.25  & 44.12 \\ \hline
+	$y$ & 2102 & 255725 & 3023070315  \\ \hline
+	\end{tabular}
+\end{center}
+Otrzymujemy wówczas:\\
+$a \approx 7.441683$ i $b \approx 1.567179$\\
+Dołóżmy dwa punktu do naszych danych (lekko zaburzone, $m=5$), sprawdzimy jak zmieni się nasze dopasowanie:\\
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|} \hline
+	$x$ & 12.56 & 16.2 & 23.25 & 25.5 & 44.12 \\ \hline
+	$y$ & 2102 & 10760 & 255725 & 702365 & 3023070315  \\ \hline
+	\end{tabular}
+\end{center}
+Otrzymujemy:\\
+$a \approx 7.43292$ i $b \approx 1.567213$\\
+Otrzymane dopasowanie jest trochę lepsze, ale nie jesteśmy w stanie stwierdzić, czy to ze względu na dodatkowe punkty czy przez \textit{inne} zaburzenie dwóch dodanych punktów. Łatwo jednak dostrzec, że różnica jest niewielka.
 \section{Podsumowanie}
+Metoda aproksymacji średniokwadratowej pozwala szybko i z dużą dokładnością dopasowywać funkcję postaci $y=ab^x$ do odpowiednich danych. Przykład $1$ pokazał, że metoda pozwala niemal perfekcyjnie odtworzyć funkcję wykładniczą na bazie zaledwie kilku punktów. Pozostałe przykłady pozwalają nabrać przekonania, że metoda nie tylko działa, ale również daje stosunkowo dokładny wynik.
 
 \end{document}
 
