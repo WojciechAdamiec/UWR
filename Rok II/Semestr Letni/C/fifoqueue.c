@@ -38,7 +38,7 @@ bool isEmpty() {
 }
 
 bool isFull() {
-    if(abs(end - begin) < SIZE)
+    if(abs(end - begin) < SIZE - 1)
         return false;
     return true;
 }
@@ -140,8 +140,8 @@ bool push() {
 int main(int argc, char *argv[]) {
     int option;
 	while (true){
-		printf("Press 1 to Pop, 2 to Push");
-	    scanf(" %d", &option)
+		printf("Press 1 to Pop, 2 to Push \n");
+	    scanf(" %d", &option);
 		if (option == 1){
 			pop();
 		}
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
 			push();
 		}
 		else{
-			printf("Error: Wrong Option!")
+			printf("Error: Wrong Option!");
 		}
 	}
 	

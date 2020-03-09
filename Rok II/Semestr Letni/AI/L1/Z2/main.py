@@ -5,49 +5,39 @@ for x in open('dic.txt', encoding='UTF-8'):
 
 lines = []
 
-for x in open('zad2-input.txt', encoding='UTF-8'):
+for x in open('zad2_input.txt', encoding='UTF-8'):
     lines.append(x.strip())
 
 def divide(string):
-    length = len(string)
-    counter = 0
-    magnitude = 0
-    words = []
-    word = ''
-    best = ''
-    power = 0
-        
-    while word != string:
-        # print('Cycle!', words,'word: ', word, 'magnitude: ', magnitude, 'counter: ', counter)
+    decay = {'':''}
+    value = {'': 0}
+
+    def rec(small):
+        counter = 0
+        word = ''
+        length = len(small)
         while counter < length:
-            # print('Inner!', words,'word: ', word, 'magnitude: ', magnitude, 'counter: ', counter)
-            word = word + string[counter]
+            word = word + small[counter]
             if word in dic:
-                words.append(word)
-                magnitude = magnitude + len(word)
-                word = ''
+                rest = small[counter + 1:]
+                if rest in decay:
+                    current = value[rest] + len(word)**2
+                    if small not in decay or value[small] < current:
+                        decay[small] = word + ' ' + decay[rest]
+                        value[small] = current
+                else:
+                    rec(rest)
+                    if rest in decay:
+                        current = value[rest] + len(word)**2
+                        if small not in decay or value[small] < current:
+                            decay[small] = word + ' ' + decay[rest]
+                            value[small] = current
             counter = counter + 1
-        if word == '':
-            # print('WYNIK: ', words)
-            pontential = 0
-            for element in words:
-                pontential = pontential + len(element) ** 2
-            if pontential > power:
-                power = pontential
-                best = ' '.join(words)
-        
-        if word != string:
-            last = words.pop(len(words) - 1)
-            diff = len(last)
-            counter = magnitude
-            magnitude = magnitude - diff
-            # print(word)
-            word = last
-        
-    return best
+    rec(string)
+    return decay[string]
 
 
-output = open('zad2-output.txt', 'r+', encoding='UTF-8')
+output = open('zad2_output.txt', 'r+', encoding='UTF-8')
 for line in lines:
     new_line = divide(line)
     print(new_line)
