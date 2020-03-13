@@ -5,7 +5,7 @@ for x in open('dic.txt'):
 
 lines = []
 
-for x in open('zad2-input.txt'):
+for x in open('zad2_input.txt'):
     lines.append(x.strip())
 
 def divide(string):
@@ -47,7 +47,7 @@ def divide(string):
     return best
 
 
-output = open('zad2-output.txt', 'r+')
+output = open('zad2_output.txt', 'r+')
 for line in lines:
     new_line = divide(line)
     print(new_line)
