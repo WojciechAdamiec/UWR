@@ -1,0 +1,181 @@
+Wojciech Adamiec
+Zadania: 1, 2, 3, 4, 5, 6
+Punkty: 7
+=============================
+Zad. 1
+
+1.) 
+
+Dla:
+ 
+X 1 1
+1
+1
+
+Mamy:
+
+# .
+. #
+
+i 
+
+. #
+# .
+
+Sa to wszystkie rozwiazania 
+(w sumie mamy 2^4 mozliwosci, latwo zauwazyc, ze tylko 2/16 mozliwosci spelniaja zadanie)
+
+2.)
+
+Dla:
+
+X 1 1 1
+1
+1
+1
+
+Czyli dla wymiaru 3 x 3
+
+Mamy miedzy innymi:
+
+# . .
+. # .
+. . #
+
+. # .
+. . #
+# . .
+
+. . #
+# . .
+. # .
+
+. . #
+. # .
+# . .
+
+A zatem rozwiazan jest wiecej niz 3.
+------------------------------------
+Zad. 2
+
+Stanem jest informacja o aktualnym polozeniu (jakie miasto) oraz ilosci paliwa w baku.
+
+Stan poczatkowy i koncowy jest oczywisty.
+
+Akcjami sa takie przejazdy, ze:
+
+1. Nowe miasto jest polaczone w grafie z aktualnym miastem.
+2. Koszt przejazdu jest mniejszy-równy od aktualnej ilosci paliwa.
+
+Wtedy stan zmiania sie tak, ze:
+
+1. Aktualne polozenie <--- nowe miasto
+2a. Ilosc paliwa <---- ilosc paliwa - koszt przejazdu, gdy w nowym miescie nie ma stacji paliw
+lub
+2b. Ilosc paliwa <---- max. ilosc paliwa w baku, gdy w nowym miescie jest stacja paliw
+-----------------------------------
+Zad. 3
+
+Zadanie jest troche niedoprecyzowane i niestety nie wiem na co moge sobie pozwolic. Zdecydowalem, ze najlepszym rozwiazaniem bedzie przed wlaczeniem algorytmu A* zrobienie pewnej inicjalizacji. Planuje wlaczyc algorytm Djikstry zaczynajac go od naszego celu podrózy, tak, ze kazdemu wierzcholkowi przypisze odleglosc wyliczana tym algorytmem od naszego celu. Podczas dzialania tego algorytmu nie bede wgl zwracal uwagi na paliwo, optymistycznie zaloze, ze da sie podrózowac miedzy kazdymi miastami, miedzy którymi w oryginalnym grafie jest krawedz. W ten sposób podczas dzialania naszego glównego algorytmu A* heurystyka bedzie po prostu wartosc zapisana przy wierzcholku podczas inicjalizacji. Mamy pewnosc, ze jest to heurystyka optymistyczna (jak sie da dojechac uwzgledniajac paliwo, to bez niego bedzie co najmniej tak samo szybko). Problem jaki widze jest taki, ze byc moze nasz graf jest bardzo duzy lub wrecz nieskonczony. W takim przypadku nie chcemy Djikstry wykonywac dla calego grafu, a tylko dla jego czesci. Trzeba by jakos sensownie zdecydowac dla jak wielu (i których wierzcholków) chcemy wykonac Djikstre.
+-----------------------------------
+Zad. 4
+
+Bedziemy chcieli zrobic to samo co w zadaniu 3. Dodatkowo musimy policzyc srednia wartosc krawedzi w grafie (lub mediane?). Nastepnie liczymy wspólczynnik:
+D = Max pojemnosc baku / srednia wartosc krawedzi. Ten wspólczynnik przechowuje informacje ile srednio krawedzi mozemy przejechac na pelnym baku. Nastepnie wracamy do rozwiazania z zad. 3 oprócz tego, ze znajdujemy odleglosc od celu dla kazdego wierzcholka algorytmem Djikstry to chcemy dodatkowo uwzgledniac, ze w danym wierzcholku znajduje sie stacja paliw. W tym celu odejmujemy dla takiego wierzcholka od minimalnej dlugosci do celu jeszcze wartosc: np. C * 1/D, gdzie C to jakas stala, w ten sposób A* bedzie preferowal drogi przez miasta ze stacjami paliw, a to "preferowanie" jest uzaleznione od tego, jak czesto musimy srednio odwiedzac takie stacje. (Jesli srednio co 2 miasta musimy tankowac to wtedy 1/D jest duze (1/2), ale jesli tankowac musimy srednio co 30 miast to wówczas 1/D jest male (1/30). Heurystyka jest dalej optymistyczna (skoro w zad. 3 byla, a teraz tylko odejmujemy jakies stale od wierzcholków to nadal jest optymistyczne). Dbamy, zeby nie wejsc na ujemne liczby (najnizej jak moze byc to 0). Heurystyka ta byc moze nie jest spójna, nie jestem w stanie rozstrzygnac tego czy jest 'sensowna'. Jestem w stanie podac przyklad grafu, gdzie zadziala ona lepiej niz ta z Zad. 3, ale równiez moge podac kontrprzyklad. Pytanie jak sprawa bedzie wygladac dla "usrednionego" grafu.
+
+-----------------------------------
+Zad. 5
+
+1.)
+
+Kazdy skoczek moze albo zostac w miejscu albo przejsc na jedno z 8 pól. (szacowanie z góry) Kiedy mam podzbiór 2 skoczków to wówczas kazdy z nich moze sie przemiescic na 9 sposobów, a zatem jest w sumie 9 * 9 róznych stanów koncowych (po tym ruchu). Uogólniajac dla podzbioru k skoczków mamy rozgalezienie nie wieksze niz 9 ^ k. (Prawodopodobnie jest troche mniejsze, tutaj dokladnosc dla ruchu stania w miejscu)
+ 
+2.)
+Heurystyka optymistyczna to taka, ze dla kazdego wierzcholka zwraca wartosc, która jest co najwyzej tak duza jak prawdziwa odleglosc do celu.
+
+Zrozumialem to zadanie tak, ze przenosimy ciag skoczków w jakies tam miejsca. Mamy jedna heurystyke h.
+
+A)
+
+Min jest na pewno bardziej optymistyczne od maksimum, wiec pokaze dla maximum.
+
+B)
+
+Maximum zwróci nam minimalna ilosc ruchów potrzebnych do przestawienia nam 'najgorszego' skoczka (lub mniejsza od faktycznej ilosci ruchów). Jesli chcemy przestawic ciag skoczków to w szczególnosci musimy przestawic równiez tego 'najgorszego', dla którego heurystyka jest optymistyczna. (faktyczna liczba ruchów jest nie mniejsza niz optymistyczna heurystyka dla 'najgorszego') Zatem ta heurystyka równiez jest optymistyczna.
+
+C)
+
+To nie jest heurystyka optymistyczna. Kontrprzyklad:
+Niech h bedzie zwracac 3/4 ilosci faktycznych ruchów potrzebnych do przestawienia skoczka (zaokraglalac w góre). Wtedy h jest optymistyczna. Dla 2 skoczków, z których kazdy potrzebuje 1 ruchu aby dotrzec do celu suma heurystyk zwróci nam 2, kiedy mozna dotrzec do celu w jednym ruchu. (Wybierajac podzbiór 2 skoczków i przesuwajac ich do celu)
+
+3.) Nie rozumiem do czego odnosi sie podpunkt.
+Jesli do podpunktu 1.) Wówczas dla pozbioru k skoczków wybieramy jednego z nich na k sposobów i mozna go ruszyc na 8 sposobów. Mamy zatem max. rozgalezienie 8k.
+
+dla A, B, C:
+
+Zauwazmy, ze z tych heurystyk najwieksza jest zawsze C, pokaze zatem tylko, ze C istotnie jest heurystyka (pozostale wtedy tez musza byc).
+
+Skoro w kazdym ruchu przenosimy tylko jednego skoczka, to wtedy w sumie musimy wykonac co najmniej tyle ruchów ile musielibysmy zrobic przesuwajac po kolei skoczków niezaleznie od siebie (ignorujemy pozycje pozostalych). Nasza heurystyka jest bardziej optymistyczna, bo dla kazdego skoczka osobno bierzemy ilosc ruchów mniejsza równa faktycznej ilosci ruchów potrzebnych do dotarcia do celu. (Dodatkowo nie przejmujemy sie jeszcze tym, ze skoczki moga sie wzajemnie blokowac). Zatem jest to heurystyka optymistyczna.
+
+-----------------------------------
+Zad. 6
+
+Program, który liczy to co powinien i od razu wyswietla:
+
+import numpy as np
+from random import choice
+
+N = 8
+queens = []
+
+Board = np.zeros((N, N), dtype=int)
+
+
+def add(x, y):
+    Board[x][y] = 1
+
+
+def remove(x, y):
+    Board[x][y] = 0
+
+
+def ok(x, y):
+    for queen in queens:
+        if x == queen[0] or y == queen[1]:
+            return False
+        if abs(queen[0] - x) == abs(queen[1] - y):
+            return False
+    return True
+
+
+def work():
+    i = 0
+    while i < N:
+        news = []
+        for j in range(N):
+            if ok(i, j):
+                news.append((i, j))
+        if not news:
+            i = 0
+            queens.clear()
+        else:
+            chosen = choice(news)
+            queens.append(chosen)
+            i = i + 1
+    for queen in queens:
+        add(queen[0], queen[1])
+
+
+work()
+print(Board)
+
+1.)
+Lekka modyfikacja i program pozwala policzyc pierwszy podpunkt (dla wywolania work duzo razy).
+Wynik to: 0.069456
+
+2.) 
+Wyrzucam wyswietlanie planszy i robie kilka optymalizacji, wtedy dla N=70 jestem w stanie jeszcze wykonac zadanie w 5 sekund, przy czym problemem jest tutaj niestabilnosc algorytmu, czasem potrzeba 2 sekund czasem 7, zatem ustalenie dokladnej liczby jest niemozliwe, przy odrobinie szczescia (byc moze sporej odrobinie) mozemy kazde ulozenie zrobic za pierwszym razem.
+
+
+-----------------------------------
+
