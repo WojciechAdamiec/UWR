@@ -8,6 +8,7 @@ lines = []
 for x in open('zad2_input.txt', encoding='UTF-8'):
     lines.append(x.strip())
 
+
 def divide(string):
     decay = {'':''}
     value = {'': 0}
