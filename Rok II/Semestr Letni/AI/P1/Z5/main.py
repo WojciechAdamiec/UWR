@@ -97,7 +97,7 @@ def work():
 
     def sub_work():
         i = 0
-        while i < 10000 and (not is_ok()):
+        while i < 5000 and (not is_ok()):
             if random.random() > 0.5:
                 index = wrong_column()
                 if index != -1:
