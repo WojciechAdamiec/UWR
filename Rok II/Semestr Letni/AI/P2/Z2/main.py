@@ -1,5 +1,6 @@
 import numpy as np
 import queue as qq
+from collections import defaultdict
 
 lines = []
 line = []
@@ -12,7 +13,6 @@ for x in open('zad_input.txt'):
 X_SIZE, Y_SIZE = len(line), len(lines)
 warehouse = np.zeros((X_SIZE, Y_SIZE), dtype='str')
 adjacent = [(0, 1), (1, 0), (-1, 0), (0, -1)]
-result = ''
 keeper = (-1, -1)
 crates_counter = 0
 crates = []
@@ -70,6 +70,23 @@ def is_ok(state):
     return verdict
 
 
+def good(state):
+    for crate in state[1:]:
+        if crate not in goals:
+            l, r, u, d = 0, 0, 0, 0
+            if warehouse[crate[0] + 1][crate[1]] == 'W':
+                r = 1
+            if warehouse[crate[0] - 1][crate[1]] == 'W':
+                l = 1
+            if warehouse[crate[0]][crate[1] + 1] == 'W':
+                d = 1
+            if warehouse[crate[0]][crate[1] - 1] == 'W':
+                u = 1
+            if (r and u) or (r and d) or (d and l) or (l and u):
+                return False
+    return True
+
+
 def give_options(state):
     options = []
     for adj in adjacent:
@@ -77,7 +94,7 @@ def give_options(state):
             if (state[0][0] + adj[0], state[0][1] + adj[1]) not in state[1:]:
                 options.append(tuple([(state[0][0] + adj[0], state[0][1] + adj[1])] + list(state[1:])))
             else:
-                if warehouse[state[0][0] + 2 * adj[0]][state[0][1] + 2 * adj[1]] == '.' or warehouse[state[0][0] + 2 * adj[0]][state[0][1] + 2 * adj[1]] == '.':
+                if warehouse[state[0][0] + 2 * adj[0]][state[0][1] + 2 * adj[1]] == '.' or warehouse[state[0][0] + 2 * adj[0]][state[0][1] + 2 * adj[1]] == 'G':
                     if (state[0][0] + 2 * adj[0], state[0][1] + 2 * adj[1]) not in state[1:]:
                         index = -1
                         for ind in range(len(state)):
@@ -89,25 +106,110 @@ def give_options(state):
 
 
 def bfs(input_state):
-    state = input_state
-    visited = set()
-    visited.add(state)
     queue = qq.Queue()
-    queue.put(state)
+    history = {}
+    discovered = set()
+    queue.put(input_state)
+    end = None
     while not queue.empty():
-        options = give_options(state)
-        for opt in options:
-            if opt not in visited:
-                visited.add(opt)
-                queue.put(opt)
-        state = queue.get()
-        print(state)
-    print('final: ', state)
+        v = queue.get()
+        if is_ok(v):
+            end = v
+            break
+        options = give_options(v)
+        for option in options:
+            if option not in discovered:
+                discovered.add(option)
+                if good(option):
+                    queue.put(option)
+                    history[option] = v
+    path = [end]
+    while end != starting_state:
+        path.append(history[end])
+        end = history[end]
+    path.reverse()
+    return path
+
+
+def h(state):
+    global goals
+    heu = 0
+    for crate in state[1:]:
+        distances = set()
+        for goal in goals:
+            distances.add(abs(crate[0] - goal[0]) + abs(crate[1] - goal[1]))
+        heu += min(distances)
+    return heu
+
+
+def a_star(input_state):
+    queue = qq.PriorityQueue()
+    history = {}
+    visited = set()
+    gScore = defaultdict(lambda: np.inf)
+    gScore[input_state] = 0
+    fScore = defaultdict(lambda: np.inf)
+    fScore[input_state] = h(input_state)
+
+    queue.put((fScore[input_state], input_state))
+    end = None
+    while not queue.empty():
+        pack = queue.get()
+        v = pack[1]
+        if is_ok(v):
+            end = v
+            break
+        visited.add(v)
+        options = give_options(v)
+        for option in options:
+            temp_Gscore = gScore[v] + 1
+            if temp_Gscore < gScore[option]:
+                history[option] = v
+                gScore[option] = temp_Gscore
+                fScore[option] = gScore[option] + h(option)
+                if option not in visited:
+                    queue.put((fScore[option], option))
+
+    path = [end]
+    while end != starting_state:
+        path.append(history[end])
+        end = history[end]
+    path.reverse()
+    return path
 
 
 init()
-bfs(starting_state)
-print(not is_ok(((1, 1), (1, 3), (2, 1))))
+# PATH = (bfs(starting_state))
+PATH = (a_star(starting_state))
+stringPath = ''
+for i in range(len(PATH) - 1):
+    first = PATH[i][0]
+    second = PATH[i + 1][0]
+    change = second[0] - first[0], second[1] - first[1]
+    if change == (0, 1):
+        stringPath += 'D'
+    if change == (0, -1):
+        stringPath += 'U'
+    if change == (1, 0):
+        stringPath += 'R'
+    if change == (-1, 0):
+        stringPath += 'L'
+
+'''
+test = ((1, 1), (1, 2), (3, 3))
+
+print('///////////////////////')
+info(test)
+print(test)
+tests = give_options(test)
+
+for t in tests:
+    print('=============')
+    print(good(t))
+    info(t)
+    print(t)
+    print('=============')
+'''
 
 output = open('zad_output.txt', 'w+')
-output.write(result)
+output.write(stringPath)

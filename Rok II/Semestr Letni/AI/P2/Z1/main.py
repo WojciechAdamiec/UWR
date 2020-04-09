@@ -1,26 +1,21 @@
 import random
 import numpy as np
 
-file = open('zad5_input.txt', encoding='UTF-8')
-first = file.readline().strip()
+file = open('zad_input.txt', encoding='UTF-8')
 
-SIZE = int(first[0]), int(first[-1])
-
-
-vertical = []
-horizontal = []
+opt_dist_memory = {}
 
 
-for i in range(SIZE[0]):
-    line = file.readline()
-    vertical.append(int(line))
-
-for j in range(SIZE[1]):
-    line = file.readline()
-    horizontal.append(int(line))
+lines = file.readlines()
+X, Y = map(int, lines[0].split())
+heights = [list(map(int, line.split())) for line in lines[1: X+1]]
+widths = [list(map(int, line.split())) for line in lines[1+X: X+Y+1]]
 
 
-matrix = np.zeros(SIZE, dtype='int8')
+matrix = np.zeros((X, Y), dtype='int8')
+
+# print(X, Y)
+# print(heights, widths)
 
 
 def info(mat):
@@ -30,52 +25,52 @@ def info(mat):
 
 
 def init():
-    for x in range(SIZE[0]):
-        for y in range(SIZE[0]):
+    for x in range(X):
+        for y in range(Y):
             matrix[x][y] = 0
-    for i in range(SIZE[0]):
-        for j in range(vertical[i]):
-            matrix[i][j] = 1
 
 
 def opt_dist(array, D):
-    length = len(array)
-    start = 0
-    end = D - 1
-    best = 0
-    ones = 0
-    for i in range(length - D + 1):
-        aux = 0
-        for j in range(start, end + 1):
-            if array[j]:
-                aux += 1
-        if aux > best:
-            best = aux
-        start += 1
-        end += 1
-    for element in array:
-        if element:
-            ones += 1
-    # print(array, D, D - 2 * best + ones)
-    return D - 2 * best + ones
+    array = list(array)
+    global opt_dist_memory
+    test = (tuple(array), tuple(D))
+    if test in opt_dist_memory:
+        return opt_dist_memory[test]
+
+    array = [0] + array
+    mat = [[np.inf for i in range(len(array) + 1)] for j in range(len(D) + 1)]
+
+    for j in range(len(array) + 1):
+        mat[0][j] = sum(array[0:j])
+
+    for i in range(1, len(D) + 1):
+        for j in range(sum(D[0:i]) + i, len(array) + 1):
+            mat[i][j] = min(mat[i][j],\
+                            mat[i][j - 1] + array[j - 1],\
+                            mat[i - 1][j - D[i - 1] - 1] + D[i - 1]\
+                            - sum(array[j - D[i - 1]: j]) + array[j - D[i - 1] - 1])
+
+    result = mat[len(D)][len(array)]
+    opt_dist_memory[test] = result
+    return result
 
 
 def is_ok():
-    for i in range(SIZE[0]):
-        if opt_dist(matrix[i], vertical[i]):
+    for row in range(X):
+        if opt_dist(matrix[row], heights[row]):
             return False
-    for j in range(SIZE[1]):
-        temp = matrix[:, j]
-        if opt_dist(temp, horizontal[j]):
+    for column in range(Y):
+        temp = matrix[:, column]
+        if opt_dist(temp, widths[column]):
             return False
     return True
 
 
 def wrong_column():
     wrongs = []
-    for index in range(SIZE[1]):
+    for index in range(Y):
         array = matrix[:, index]
-        if opt_dist(array, horizontal[index]):
+        if opt_dist(array, widths[index]):
             wrongs.append(index)
     if wrongs:
         return random.choice(wrongs)
@@ -84,9 +79,9 @@ def wrong_column():
 
 def wrong_row():
     wrongs = []
-    for index in range(SIZE[0]):
+    for index in range(X):
         array = matrix[index]
-        if opt_dist(array, vertical[index]):
+        if opt_dist(array, heights[index]):
             wrongs.append(index)
     if wrongs:
         return random.choice(wrongs)
@@ -97,21 +92,29 @@ def work():
 
     def sub_work():
         i = 0
-        while i < 5000 and (not is_ok()):
-            if random.random() > 0.5:
+        while i < 200000 and (not is_ok()):
+            roll = random.random()
+            if roll >= 0:
                 index = wrong_column()
-                if index != -1:
+                if roll < 0.02:
+                    randX = random.randint(0, X - 1)
+                    randY = random.randint(0, Y - 1)
+                    if matrix[randX][randY] == 1:
+                        matrix[randX][randY] = 0
+                    else:
+                        matrix[randX][randY] = 1
+                elif index != -1:
                     virtual = matrix.copy()
-                    options = np.zeros(SIZE[0], dtype='int8')
-                    change = opt_dist(virtual[:, index], horizontal[index])
-                    for j in range(SIZE[0]):
-                        aux = opt_dist(virtual[j], vertical[j])
+                    options = np.zeros(X, dtype='int8')
+                    change = opt_dist(virtual[:, index], widths[index])
+                    for j in range(X):
+                        aux = opt_dist(virtual[j], heights[j])
                         if virtual[j, index] == 1:
                             virtual[j, index] = 0
                         else:
                             virtual[j, index] = 1
-                        options[j] = (change - opt_dist(virtual[:, index], horizontal[index])) +\
-                                     (aux - opt_dist(virtual[j], vertical[j]))
+                        options[j] = (change - opt_dist(virtual[:, index], widths[index])) +\
+                                     (aux - opt_dist(virtual[j], heights[j]))
                         if virtual[j, index] == 1:
                             virtual[j, index] = 0
                         else:
@@ -139,23 +142,23 @@ def work():
 
 
 work()
-"""
-s = '##.....##.....##############.....##.....##.....##'
-for x in range(7):
-    for i in range(7):
-        if s[7 * x + i] == '#':
-            matrix[x][i] = 1
-"""
-'''
-print(vertical, horizontal)
 
+'''
+s = '.###.......#.#......####.........#.###.....######.....######'
+for x in range(6):
+    for i in range(10):
+        if s[10 * x + i] == '#':
+            matrix[x][i] = 1
+'''
+'''
 info(matrix)
 if is_ok():
     print('OK')
 '''
-f = open('zad5_output.txt', 'w+')
-for i in range(SIZE[0]):
-    for j in range(SIZE[1]):
+
+f = open('zad_output.txt', 'w+')
+for i in range(X):
+    for j in range(Y):
         if matrix[i][j]:
             f.write('#')
         else:
