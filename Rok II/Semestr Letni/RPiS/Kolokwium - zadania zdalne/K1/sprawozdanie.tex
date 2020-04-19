@@ -164,7 +164,7 @@ from math import exp
 def G(t):
   def internal(x):
     return exp(-(x**2) / 2)
-  return romberg(internal, 0, t, 1000, 0.001)
+  return romberg(internal, 0, t, 1000, 0.00001)
 \end{lstlisting}
 
 \begin{lstlisting}[title={Definicja funkcji $\Phi(t)$}]

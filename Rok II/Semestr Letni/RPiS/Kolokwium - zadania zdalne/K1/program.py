@@ -1,4 +1,10 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# coding: utf-8
+
+# ## Metoda romberga
+
+# In[1]:
+
 
 def dump_row(i, R):
   print('R[', i, '] = ', sep='', end='')
@@ -41,36 +47,59 @@ def romberg(f, a, b, max_steps, acc):
 
   return Rp[max_steps-1] # return our best guess
 
-"""## Definicja funkcji G"""
 
-from math import exp, pi, sqrt
+# ## Definicja funkcji G
+
+# In[2]:
 
 
+from math import exp
 def G(t):
   def internal(x):
     return exp(-(x**2) / 2)
-  return romberg(internal, 0, t, 1000, 0.001)
+  return romberg(internal, 0, t, 1000, 0.00001)
 
-"""## Definicja funkcji Phi"""
 
+# ## Definicja funkcji Phi
+
+# In[3]:
+
+
+from math import sqrt, pi
 def phi(t):
   if t < 0:
     return 1 - phi(-t)
   return 0.5 + 1/sqrt(2 * pi) * G(t)
 
-"""## Kilka przykładów i testów"""
+
+# ## Kilka przykładów i testów
+# 
+
+# In[4]:
+
 
 t = 0.5
 print('G(', t, ') = ', G(t), sep ='')
 
-"""#### Chcemy, aby bardzo małe t było bliskie 0 oraz bardzo duże t było bliskie 1"""
+
+# #### Chcemy, aby bardzo małe t było bliskie 0 oraz bardzo duże t było bliskie 1
+# 
+# 
+# 
+
+# In[5]:
+
 
 t2 = 10000
 print('Phi(', t2, ') = ', phi(t2), sep ='')
 t3 = - 10000
 print('Phi(', t3, ') = ', phi(t3), sep ='')
 
-"""#### Kilka losowych przykładów"""
+
+# #### Kilka losowych przykładów
+
+# In[6]:
+
 
 t4 = 3
 t5 = 1.5
@@ -89,3 +118,4 @@ print('Phi(', t8, ') = ', phi(t8), sep ='')
 print('Phi(', t9, ') = ', phi(t9), sep ='')
 print('Phi(', t10, ') = ', phi(t10), sep ='')
 print('Phi(', t11, ') = ', phi(t11), sep ='')
+
