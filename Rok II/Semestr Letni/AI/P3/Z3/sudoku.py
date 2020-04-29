@@ -14,7 +14,13 @@ def get_column(j):
     return [V(i,j) for i in range(9)] 
             
 def get_raw(i):
-    return [V(i,j) for j in range(9)] 
+    return [V(i,j) for j in range(9)]
+
+def get_sector(i, j):
+    return [V(a, b) for a in range(i * 3, i * 3 + 3) for b in range(j * 3, j * 3 + 3)]
+
+def sectors():
+    return [all_different(get_sector(i, j)) for i in range(3) for j in range(3)]
                         
 def horizontal():   
     return [ all_different(get_raw(i)) for i in range(9)]
@@ -41,7 +47,7 @@ def sudoku(assigments):
     print 'solve([' + ', '.join(variables) + ']) :- '
     
     
-    cs = domains(variables) + vertical() + horizontal() #TODO: too weak contraints, add something!
+    cs = domains(variables) + vertical() + horizontal() + sectors()  #Added sectors!
     for i,j,val in assigments:
         cs.append( '%s #= %d' % (V(i,j), val) )
     
