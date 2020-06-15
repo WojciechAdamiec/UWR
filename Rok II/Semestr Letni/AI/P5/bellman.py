@@ -1,4 +1,3 @@
-import random
 tasks_names = ['1', '2', '3', '6', '8', '9', '10', '11']
 
 
@@ -7,7 +6,7 @@ def bellman(number):
     WIN = 100
     FAIL = -100
     GAMMA = 0.99
-    COST = -1
+    COST = 0
     task_file = 'task' + number + '.txt'
     single_speeds = [-3, -2, -1, 0, 1, 2, 3]
     actions = [(0, 0), (1, 0), (0, 1), (1, 1), (-1, 0), (0, -1), (-1, -1), (1, -1), (-1, 1)]
@@ -60,6 +59,7 @@ def bellman(number):
         for state in states:
             Olds[state] = 0
             Values[state] = 0
+            Guide[state] = (0, 0)
 
     def move(state, action):
         x, y, vx, vy = state
@@ -100,7 +100,8 @@ def bellman(number):
     def find_value(state):
         if state in Olds:
             return Olds[state]
-        if state in ends:
+        x, y, vx, vy = state
+        if (x, y) in ends:
             return WIN
         return FAIL
 
@@ -122,17 +123,17 @@ def bellman(number):
     def iterate(N):
         for i in range(N):
             update()
+        file_output = 'policy_for_task' + number + '.txt'
+        paint = open(file_output, "w")
+        for state in states:
+            x, y, vx, vy = state
+            dvx, dvy = Guide[state]
+            print(x, y, vx, vy, '    ', dvx, dvy, file=paint)
 
     info()
     init()
     iterate(200)
 
-    file_output = 'policy_for_task' + number + '.txt'
-    paint = open(file_output, "w")
-    for state in states:
-        x, y, vx, vy = state
-        dvx, dvy = Guide[state]
-        print(x, y, vx, vy, '    ', dvx, dvy, file=paint)
-
 
 bellman('1')
+
