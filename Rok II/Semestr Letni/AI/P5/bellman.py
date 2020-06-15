@@ -132,8 +132,8 @@ def bellman(number):
 
     info()
     init()
-    iterate(200)
+    iterate(100)
 
 
-bellman('1')
-
+for task in tasks_names:
+    bellman(task)
