@@ -1,0 +1,1 @@
+Przygotowałem się do pracy z narzędziami: Google Chrome, node.js, Visual Studio Code. Deklaruje to zadanie.
