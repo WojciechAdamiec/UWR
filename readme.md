@@ -1,7 +1,7 @@
 # Repozytorium Studenckie
 
 #### Znajdują się tutaj rozwiązania zadań z przedmiotów, które realizowałem podczas studiów.
-###### Początki bywają trudne, dlatego repozytorium może być wybrakowane.
+###### Początki bywają trudne, dlatego repozytorium może być wybrakowane. Nie polecam patrzeć na pierwszy rok - im dalej tym bardziej porządnie.
 
 ### Zima 2018/2019:
 
@@ -67,7 +67,7 @@
 
 ### Zima 2020/2021:
 
-* Machine Learning (w: Jan Chorowski, prac: Michał	Stypułkowski)
+* Machine Learning
     * Wykład: Jan Chorowski
     * Ćwiczenio-pracownia: Michał	Stypułkowski
 * Kurs: zaawansowane techniki w C++ i STL
@@ -84,3 +84,22 @@
     * Pracownia: Łukasz Piwowar
 * Innovative Projects by Nokia
     * Prowadzący: Zespół z Nokii
+
+### Lato 2020/2021:
+
+* Algorytmy i struktury danych
+	* Wykład: Krzysztof Loryś
+    * Ćwiczenia: Szymon Dudycz
+	* Pracownia: Marcin Bieńkowski
+* Architektury systemów komputerowych
+	* Wykład: Krystian Bacławski
+    * Ćwiczenia: Piotr Witkowski
+* Bazy danych
+	* Wykład: Piotr Wieczorek
+    * Ćwiczenia: Mateusz Pyzik
+* Sieci komputerowe
+	* Wykład: Marcin Bieńkowski
+    * Ćwiczenia: Paweł Garncarek
+* Testowanie gier
+	* Wykład: Leszek Grocholski
+    * Ćwiczenia: Leszek Grocholski
