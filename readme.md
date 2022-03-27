@@ -8,7 +8,7 @@
 * Logika dla informatyków
     * Wykład: Witold Charatnik
     * Ćwiczenia: Jan Otop
-* Analiza Matematyczna
+* Analiza matematyczna
     * Wykład: Maciej Paluszyński
     * Ćwiczenia: Wojciech Młotkowski
 * Wstęp do informatyki
@@ -103,3 +103,14 @@
 * Testowanie gier
 	* Wykład: Leszek Grocholski
     * Ćwiczenia: Leszek Grocholski
+
+### Zima 2021/2022:
+
+* Systemy Operacyjne
+    * Wykład: Krystian Bacławski
+    * Ćwiczenia: Tomasz Wierzbicki
+* Komunikacja człowiek-komputer
+    * Wykład: Zdzisław Płoski
+    * Ćwiczenia: Leszek Grocholski
+* Proseminarium: Bezpieczeństwo i ochrona informacji
+    * Proseminarium: Leszek Grocholski

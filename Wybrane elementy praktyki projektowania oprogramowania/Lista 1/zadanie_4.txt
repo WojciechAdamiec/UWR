@@ -1,0 +1,1 @@
+Potrafie debugować kod zarówno w przeglądarce Chrome jak i w VSC. Deklaruje to zadanie.

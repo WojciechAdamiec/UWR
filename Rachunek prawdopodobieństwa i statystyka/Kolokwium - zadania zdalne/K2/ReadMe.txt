@@ -1,0 +1,1 @@
+Polecamy otworzyć rozszerzenie .html, jeśli nie ma się dostępu do arkusza, który wyświetla poprawnie kolorowanie tabeli (która znacząco ułatwia przeglądanie danych).
